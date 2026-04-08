@@ -48,8 +48,8 @@ choice = option_menu(
         }
     )
     
-    st.markdown("---")
-    uploaded_file = st.file_uploader("📂 Upload Dataset (CSV/Excel)", type=["csv", "xlsx"])
+st.markdown("---")
+uploaded_file = st.file_uploader("📂 Upload Dataset (CSV/Excel)", type=["csv", "xlsx"])
 
 
 if 'rfm_df' not in st.session_state:
