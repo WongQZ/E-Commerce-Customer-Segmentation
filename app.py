@@ -17,7 +17,7 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
     
-   choice = option_menu(
+choice = option_menu(
         menu_title="Main Menu", 
         options=["Data Overview", "K-Means (A)", "DBSCAN (B)", "MeanShift (C)"],
         icons=['database-fill-check', 'pie-chart-fill', 'water', 'cpu-fill'], 
