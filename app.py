@@ -1,68 +1,85 @@
 import streamlit as st
 import pandas as pd
 
-# 设置页面配置 (这会让你们的 Demo 看起来更专业)
+# 导入我们刚刚写好的独立模块
+import data_preprocessing as dp
+import kmeans_clustering as km
+import dbscan_clustering as db
+import meanshift_clustering as ms
+
 st.set_page_config(page_title="E-Commerce Customer Segmentation", page_icon="🛒", layout="wide")
 
 st.title("🛒 E-Commerce Customer Segmentation System")
 st.markdown("---")
 
-# 侧边栏：导航菜单
 st.sidebar.title("Navigation")
 menu = ["1. Data Overview & Preprocessing", "2. K-Means Clustering (Member A)", "3. DBSCAN Clustering (Member B)", "4. MeanShift Clustering (Member C)"]
 choice = st.sidebar.radio("Go to", menu)
 
-# 侧边栏：数据上传区域
 st.sidebar.header("📁 Data Source")
-data_option = st.sidebar.radio("Select your dataset:", ["Upload Your Own Dataset", "Use Default (UCI Retail)"])
+data_option = st.sidebar.radio("Select your dataset:", ["Upload Your Own Dataset"])
 
-@st.cache_data # 使用缓存加速加载
-def load_data(uploaded_file=None):
-    if uploaded_file is not None:
-        if uploaded_file.name.endswith('.csv'):
-            return pd.read_csv(uploaded_file, encoding='unicode_escape')
-        else:
-            return pd.read_excel(uploaded_file)
+@st.cache_data
+def load_data(uploaded_file):
+    if uploaded_file.name.endswith('.csv'):
+        return pd.read_csv(uploaded_file, encoding='unicode_escape')
     else:
-        # 这里假设你们本地放了一个 sample_data.csv 作为默认数据
-        # 实际演示时请确保文件存在
-        return pd.DataFrame({"Message": ["Please upload a dataset or provide a default file."]})
+        return pd.read_excel(uploaded_file)
 
-# 数据加载逻辑
+# 初始化 session_state 来保存处理后的数据，避免在切换页面时数据丢失
+if 'rfm_df' not in st.session_state:
+    st.session_state.rfm_df = None
+if 'rfm_scaled_df' not in st.session_state:
+    st.session_state.rfm_scaled_df = None
+
 df = None
-if data_option == "Upload Your Own Dataset":
-    uploaded_file = st.sidebar.file_uploader("Upload E-commerce data (CSV/Excel)", type=["csv", "xlsx"])
-    if uploaded_file:
-        df = load_data(uploaded_file)
-        st.sidebar.success("File uploaded successfully!")
-elif data_option == "Use Default (UCI Retail)":
-    # df = load_data() # 等你们有了默认文件再取消注释
-    st.sidebar.info("Default dataset selected (Placeholder).")
+uploaded_file = st.sidebar.file_uploader("Upload E-commerce data (CSV/Excel)", type=["csv", "xlsx"])
+
+if uploaded_file:
+    df = load_data(uploaded_file)
+    st.sidebar.success("File uploaded successfully!")
+    
+    # 自动进行数据清洗和 RFM 特征提取，存入 session_state
+    cleaned_df = dp.clean_data(df)
+    st.session_state.rfm_df = dp.calculate_rfm(cleaned_df)
+    st.session_state.rfm_scaled_df, scaler = dp.scale_rfm_data(st.session_state.rfm_df)
+else:
+    st.sidebar.info("👈 Please upload a dataset to begin.")
 
 # --- 页面路由逻辑 ---
 if choice == "1. Data Overview & Preprocessing":
     st.header("📊 Data Overview")
     if df is not None:
-        st.write(f"Dataset Shape: **{df.shape[0]} rows**, **{df.shape[1]} columns**")
+        st.write(f"Raw Dataset Shape: **{df.shape[0]} rows**, **{df.shape[1]} columns**")
         st.dataframe(df.head())
         
-        st.subheader("🛠️ RFM Feature Extraction")
-        st.info("Here we will show how raw transaction data is converted into Recency, Frequency, and Monetary (RFM) features for clustering.")
-        # 这里之后可以引入 data_preprocessing.py 的逻辑
+        st.subheader("🛠️ RFM Feature Extraction & Scaling")
+        st.success(f"Successfully extracted RFM features for **{st.session_state.rfm_df.shape[0]}** unique customers.")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write("**Calculated RFM Data (Before Scaling):**")
+            st.dataframe(st.session_state.rfm_df.head())
+        with col2:
+            st.write("**Scaled RFM Data (For Machine Learning):**")
+            st.dataframe(st.session_state.rfm_scaled_df.head())
     else:
         st.warning("Please upload a dataset from the sidebar to start.")
 
 elif choice == "2. K-Means Clustering (Member A)":
-    st.header("🎯 K-Means Clustering")
-    st.write("This module is developed by Member A.")
-    # 这里之后引入 kmeans_clustering.py
+    if st.session_state.rfm_scaled_df is not None:
+        km.run_kmeans_app(st.session_state.rfm_df.copy(), st.session_state.rfm_scaled_df.copy())
+    else:
+        st.warning("Please upload data in the 'Data Overview' tab first.")
 
 elif choice == "3. DBSCAN Clustering (Member B)":
-    st.header("🔍 DBSCAN Clustering")
-    st.write("This module is developed by Member B.")
-    # 这里之后引入 dbscan_clustering.py
+    if st.session_state.rfm_scaled_df is not None:
+        db.run_dbscan_app(st.session_state.rfm_df.copy(), st.session_state.rfm_scaled_df.copy())
+    else:
+        st.warning("Please upload data in the 'Data Overview' tab first.")
 
 elif choice == "4. MeanShift Clustering (Member C)":
-    st.header("🌌 MeanShift Clustering")
-    st.write("This module is developed by Member C.")
-    # 这里之后引入 meanshift_clustering.py
+    if st.session_state.rfm_scaled_df is not None:
+        ms.run_meanshift_app(st.session_state.rfm_df.copy(), st.session_state.rfm_scaled_df.copy())
+    else:
+        st.warning("Please upload data in the 'Data Overview' tab first.")
