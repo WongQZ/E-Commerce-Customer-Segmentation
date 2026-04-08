@@ -19,7 +19,6 @@ def run_kmeans_app(rfm_df, rfm_scaled_df):
             rfm_df['Cluster'] = cluster_labels
             rfm_df['Cluster'] = rfm_df['Cluster'].astype(str) 
             
-)
             silhouette_avg = silhouette_score(rfm_scaled_df, cluster_labels)
             
 
