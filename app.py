@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-# 导入我们刚刚写好的独立模块
 import data_preprocessing as dp
 import kmeans_clustering as km
 import dbscan_clustering as db
@@ -26,7 +25,6 @@ def load_data(uploaded_file):
     else:
         return pd.read_excel(uploaded_file)
 
-# 初始化 session_state 来保存处理后的数据，避免在切换页面时数据丢失
 if 'rfm_df' not in st.session_state:
     st.session_state.rfm_df = None
 if 'rfm_scaled_df' not in st.session_state:
@@ -39,14 +37,14 @@ if uploaded_file:
     df = load_data(uploaded_file)
     st.sidebar.success("File uploaded successfully!")
     
-    # 自动进行数据清洗和 RFM 特征提取，存入 session_state
+  
     cleaned_df = dp.clean_data(df)
     st.session_state.rfm_df = dp.calculate_rfm(cleaned_df)
     st.session_state.rfm_scaled_df, scaler = dp.scale_rfm_data(st.session_state.rfm_df)
 else:
     st.sidebar.info("👈 Please upload a dataset to begin.")
 
-# --- 页面路由逻辑 ---
+
 if choice == "1. Data Overview & Preprocessing":
     st.header("📊 Data Overview")
     if df is not None:
