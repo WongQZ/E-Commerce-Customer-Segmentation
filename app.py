@@ -1,29 +1,40 @@
 import streamlit as st
 import pandas as pd
+from streamlit_option_menu import option_menu
 
 import data_preprocessing as dp
 import kmeans_clustering as km
 import dbscan_clustering as db
 import meanshift_clustering as ms
 
-st.set_page_config(page_title="E-Commerce Customer Segmentation", page_icon="🛒", layout="wide")
+st.set_page_config(page_title="AI Customer Insight", page_icon="🛒", layout="wide")
 
-st.title("🛒 E-Commerce Customer Segmentation System")
-st.markdown("---")
+with st.sidebar:
+    st.markdown("""
+        <div style='text-align: center;'>
+            <h2 style='color: #FF4B4B;'>🛍️ AI Segmenter</h2>
+            <p style='color: #666;'>E-commerce Analytics Pro</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    choice = option_menu(
+        menu_title="Main Menu", 
+        options=["Data Overview", "K-Means (A)", "DBSCAN (B)", "MeanShift (C)"],
+        # 对应的图标来自 Bootstrap Icons
+        icons=['database-fill-check', 'pie-chart-fill', 'water', 'cpu-fill'], 
+        menu_icon="cast", 
+        default_index=0,
+        styles={
+            "container": {"padding": "5!important", "background-color": "#fafafa"},
+            "icon": {"color": "#FF4B4B", "font-size": "18px"}, 
+            "nav-link": {"font-size": "15px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
+            "nav-link-selected": {"background-color": "#FF4B4B"},
+        }
+    )
+    
+    st.markdown("---")
+    uploaded_file = st.file_uploader("📂 Upload Dataset (CSV/Excel)", type=["csv", "xlsx"])
 
-st.sidebar.title("Navigation")
-menu = ["1. Data Overview & Preprocessing", "2. K-Means Clustering (Member A)", "3. DBSCAN Clustering (Member B)", "4. MeanShift Clustering (Member C)"]
-choice = st.sidebar.radio("Go to", menu)
-
-st.sidebar.header("Data Source")
-data_option = st.sidebar.radio("Select your dataset:", ["Upload Your Own Dataset"])
-
-@st.cache_data
-def load_data(uploaded_file):
-    if uploaded_file.name.endswith('.csv'):
-        return pd.read_csv(uploaded_file, encoding='unicode_escape')
-    else:
-        return pd.read_excel(uploaded_file)
 
 if 'rfm_df' not in st.session_state:
     st.session_state.rfm_df = None
@@ -31,53 +42,52 @@ if 'rfm_scaled_df' not in st.session_state:
     st.session_state.rfm_scaled_df = None
 
 df = None
-uploaded_file = st.sidebar.file_uploader("Upload E-commerce data (CSV/Excel)", type=["csv", "xlsx"])
-
 if uploaded_file:
-    df = load_data(uploaded_file)
-    st.sidebar.success("File uploaded successfully!")
+ 
+    if uploaded_file.name.endswith('.csv'):
+        df = pd.read_csv(uploaded_file, encoding='unicode_escape')
+    else:
+        df = pd.read_excel(uploaded_file)
     
-  
+
     cleaned_df = dp.clean_data(df)
     st.session_state.rfm_df = dp.calculate_rfm(cleaned_df)
-    st.session_state.rfm_scaled_df, scaler = dp.scale_rfm_data(st.session_state.rfm_df)
-else:
-    st.sidebar.info("👈 Please upload a dataset to begin.")
+    st.session_state.rfm_scaled_df, _ = dp.scale_rfm_data(st.session_state.rfm_df)
+    st.sidebar.success("✅ Data Processed!")
 
-
-if choice == "1. Data Overview & Preprocessing":
-    st.header("📊 Data Overview")
+if choice == "Data Overview":
+    st.title("📊 Data Overview & Preprocessing")
     if df is not None:
-        st.write(f"Raw Dataset Shape: **{df.shape[0]} rows**, **{df.shape[1]} columns**")
-        st.dataframe(df.head())
-        
-        st.subheader("🛠️ RFM Feature Extraction & Scaling")
-        st.success(f"Successfully extracted RFM features for **{st.session_state.rfm_df.shape[0]}** unique customers.")
+        st.write("### Raw Data Preview")
+        st.dataframe(df.head(10), use_container_width=True)
         
         col1, col2 = st.columns(2)
         with col1:
-            st.write("**Calculated RFM Data (Before Scaling):**")
-            st.dataframe(st.session_state.rfm_df.head())
+            st.write("### 🔢 Calculated RFM")
+            st.dataframe(st.session_state.rfm_df.head(), use_container_width=True)
         with col2:
-            st.write("**Scaled RFM Data (For Machine Learning):**")
-            st.dataframe(st.session_state.rfm_scaled_df.head())
+            st.write("### 📏 Scaled Features")
+            st.dataframe(st.session_state.rfm_scaled_df.head(), use_container_width=True)
     else:
-        st.warning("Please upload a dataset from the sidebar to start.")
+        st.info("👋 Welcome! Please upload your e-commerce CSV file from the sidebar to begin.")
 
-elif choice == "2. K-Means Clustering (Member A)":
+elif choice == "K-Means (A)":
+    st.title("🎯 K-Means Clustering Analysis")
     if st.session_state.rfm_scaled_df is not None:
         km.run_kmeans_app(st.session_state.rfm_df.copy(), st.session_state.rfm_scaled_df.copy())
     else:
-        st.warning("Please upload data in the 'Data Overview' tab first.")
+        st.warning("⚠️ Please upload data first.")
 
-elif choice == "3. DBSCAN Clustering (Member B)":
+elif choice == "DBSCAN (B)":
+    st.title("🔍 DBSCAN Density-Based Clustering")
     if st.session_state.rfm_scaled_df is not None:
         db.run_dbscan_app(st.session_state.rfm_df.copy(), st.session_state.rfm_scaled_df.copy())
     else:
-        st.warning("Please upload data in the 'Data Overview' tab first.")
+        st.warning("⚠️ Please upload data first.")
 
-elif choice == "4. MeanShift Clustering (Member C)":
+elif choice == "MeanShift (C)":
+    st.title("🌌 MeanShift Autonomous Clustering")
     if st.session_state.rfm_scaled_df is not None:
         ms.run_meanshift_app(st.session_state.rfm_df.copy(), st.session_state.rfm_scaled_df.copy())
     else:
-        st.warning("Please upload data in the 'Data Overview' tab first.")
+        st.warning("⚠️ Please upload data first.")
