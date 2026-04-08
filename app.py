@@ -9,36 +9,31 @@ import meanshift_clustering as ms
 
 st.set_page_config(page_title="AI Customer Insight", page_icon="🛒", layout="wide")
 
+# --- 侧边栏高级导航 ---
 with st.sidebar:
     st.markdown("""
         <div style='text-align: center;'>
             <h2 style='color: #FF4B4B;'>🛍️ AI Segmenter</h2>
-            <p style='color: #666;'>E-commerce Analytics Pro</p>
+            <p style='color: #888;'>E-commerce Analytics Pro</p>
         </div>
+        <hr>
     """, unsafe_allow_html=True)
     
-choice = option_menu(
-        menu_title="Main Menu", 
+    # 【注意】这里前面有 4 个空格，代表它被关在 sidebar 里面！
+    choice = option_menu(
+        menu_title=None, 
         options=["Data Overview", "K-Means (A)", "DBSCAN (B)", "MeanShift (C)"],
         icons=['database-fill-check', 'pie-chart-fill', 'water', 'cpu-fill'], 
         menu_icon="cast", 
         default_index=0,
         styles={
-            "container": {
-                "padding": "5!important", 
-                "background-color": "#262730", 
-                "border": "1px solid #41434d"
-            },
-            "icon": {
-                "color": "#00FFCC", 
-                "font-size": "20px"
-            }, 
+            "container": {"padding": "0!important", "background-color": "transparent"},
+            "icon": {"color": "#FF4B4B", "font-size": "18px"}, 
             "nav-link": {
-                "color": "#FFFFFF", 
-                "font-size": "16px", 
+                "font-size": "15px", 
                 "text-align": "left", 
-                "margin":"5px", 
-                "--hover-color": "#3e3f4b" 
+                "margin":"5px 0", 
+                "--hover-color": "#333" 
             },
             "nav-link-selected": {
                 "background-color": "#FF4B4B", 
@@ -48,14 +43,12 @@ choice = option_menu(
         }
     )
     
-st.markdown("---")
-uploaded_file = st.file_uploader("📂 Upload Dataset (CSV/Excel)", type=["csv", "xlsx"])
+    # 【注意】这里也有 4 个空格！上传组件也在 sidebar 里！
+    st.markdown("---")
+    uploaded_file = st.file_uploader("📂 Upload Dataset (CSV/Excel)", type=["csv", "xlsx"])
 
-
+# --- 数据处理逻辑 (这里没有缩进了，代表回到了主页面) ---
 if 'rfm_df' not in st.session_state:
-    st.session_state.rfm_df = None
-if 'rfm_scaled_df' not in st.session_state:
-    st.session_state.rfm_scaled_df = None
 
 df = None
 if uploaded_file:
