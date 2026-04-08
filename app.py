@@ -9,7 +9,7 @@ import meanshift_clustering as ms
 
 st.set_page_config(page_title="AI Customer Insight", page_icon="🛒", layout="wide")
 
-# --- 侧边栏高级导航 ---
+
 with st.sidebar:
     st.markdown("""
         <div style='text-align: center;'>
@@ -19,7 +19,6 @@ with st.sidebar:
         <hr>
     """, unsafe_allow_html=True)
     
-    # 【注意】这里前面有 4 个空格，代表它被关在 sidebar 里面！
     choice = option_menu(
         menu_title=None, 
         options=["Data Overview", "K-Means (A)", "DBSCAN (B)", "MeanShift (C)"],
@@ -43,12 +42,14 @@ with st.sidebar:
         }
     )
     
-    # 【注意】这里也有 4 个空格！上传组件也在 sidebar 里！
+  
     st.markdown("---")
     uploaded_file = st.file_uploader("📂 Upload Dataset (CSV/Excel)", type=["csv", "xlsx"])
 
-# --- 数据处理逻辑 (这里没有缩进了，代表回到了主页面) ---
 if 'rfm_df' not in st.session_state:
+    st.session_state.rfm_df = None
+if 'rfm_scaled_df' not in st.session_state:
+    st.session_state.rfm_scaled_df = None
 
 df = None
 if uploaded_file:
