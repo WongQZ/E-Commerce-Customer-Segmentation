@@ -47,12 +47,29 @@ def run_dbscan_app(rfm_df, rfm_scaled_df):
             color_map['-1'] = 'black' 
             
             fig = px.scatter_3d(
-                rfm_df, x='Recency', y='Frequency', z='Monetary',
-                color='Cluster', hover_name='CustomerID',
-                title=f'DBSCAN Segments (eps={eps_value}, min_samples={min_samples_value})',
-                opacity=0.7, color_discrete_map=color_map
+                rfm_df, 
+                x='Recency', y='Frequency', z='Monetary',
+                color='Cluster', 
+                hover_name='CustomerID',
+                title=f'DBSCAN Segments',
+                opacity=0.9,
+                
+                color_discrete_map={
+                    "-1": "#FF4B4B",  
+                    "0": "#00FFCC",  
+                    "1": "#B14BFF",   
+                    "2": "#FFD700",   
+                    "3": "#00BFFF"    
+                }
             )
-            fig.update_layout(margin=dict(l=0, r=0, b=0, t=30))
+            
+            fig.update_layout(
+                margin=dict(l=0, r=0, b=0, t=30),
+                template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", 
+                plot_bgcolor="rgba(0,0,0,0)"
+            )
+            
             st.plotly_chart(fig, use_container_width=True)
             
             if n_noise_ > 0:
