@@ -15,7 +15,7 @@ st.sidebar.title("Navigation")
 menu = ["1. Data Overview & Preprocessing", "2. K-Means Clustering (Member A)", "3. DBSCAN Clustering (Member B)", "4. MeanShift Clustering (Member C)"]
 choice = st.sidebar.radio("Go to", menu)
 
-st.sidebar.header("📁 Data Source")
+st.sidebar.header("Data Source")
 data_option = st.sidebar.radio("Select your dataset:", ["Upload Your Own Dataset"])
 
 @st.cache_data
