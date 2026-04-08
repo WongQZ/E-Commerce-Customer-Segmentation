@@ -17,18 +17,34 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
     
-    choice = option_menu(
+   choice = option_menu(
         menu_title="Main Menu", 
         options=["Data Overview", "K-Means (A)", "DBSCAN (B)", "MeanShift (C)"],
-        # 对应的图标来自 Bootstrap Icons
         icons=['database-fill-check', 'pie-chart-fill', 'water', 'cpu-fill'], 
         menu_icon="cast", 
         default_index=0,
         styles={
-            "container": {"padding": "5!important", "background-color": "#fafafa"},
-            "icon": {"color": "#FF4B4B", "font-size": "18px"}, 
-            "nav-link": {"font-size": "15px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
-            "nav-link-selected": {"background-color": "#FF4B4B"},
+            "container": {
+                "padding": "5!important", 
+                "background-color": "#262730", 
+                "border": "1px solid #41434d"
+            },
+            "icon": {
+                "color": "#00FFCC", 
+                "font-size": "20px"
+            }, 
+            "nav-link": {
+                "color": "#FFFFFF", 
+                "font-size": "16px", 
+                "text-align": "left", 
+                "margin":"5px", 
+                "--hover-color": "#3e3f4b" 
+            },
+            "nav-link-selected": {
+                "background-color": "#FF4B4B", 
+                "font-weight": "bold",
+                "color": "white"
+            },
         }
     )
     
