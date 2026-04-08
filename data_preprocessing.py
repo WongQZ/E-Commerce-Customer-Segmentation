@@ -3,14 +3,14 @@ import datetime as dt
 from sklearn.preprocessing import StandardScaler
 
 def clean_data(df):
-    """清洗原始数据：去除缺失值和退货/异常订单"""
+    """Clean raw data: Obtain return value and return or abnormal orders"""
     df = df.dropna(subset=['CustomerID']) 
     df = df[df['Quantity'] > 0] 
     df = df[df['UnitPrice'] > 0] 
     return df
 
 def calculate_rfm(df):
-    """将原始交易记录转化为 RFM 特征矩阵"""
+    """Transform the original transaction records into an RFM feature matrix."""
     df['TotalPrice'] = df['Quantity'] * df['UnitPrice']
     df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
     
@@ -29,7 +29,7 @@ def calculate_rfm(df):
     return rfm
 
 def scale_rfm_data(rfm_df):
-    """特征缩放 (至关重要！因为聚类对数值大小敏感)"""
+    """Feature scalin"""
     
     rfm_features = rfm_df[['Recency', 'Frequency', 'Monetary']]
     
