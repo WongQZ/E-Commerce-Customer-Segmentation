@@ -9,6 +9,26 @@ import meanshift_clustering as ms
 
 st.set_page_config(page_title="AI Customer Insight", page_icon="🛒", layout="wide")
 
+st.markdown("""
+    <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        
+        [data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
+            background-color: #1E1E1E;
+            border: 1px dashed #FF4B4B;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        [data-testid="stSidebar"] [data-testid="stFileUploadDropzone"]:hover {
+            border: 1px solid #FF4B4B;
+            box-shadow: 0 0 10px rgba(255, 75, 75, 0.3);
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+with st.sidebar:  
     st.markdown("""
         <div style='text-align: center; 
                     padding: 20px 10px; 
