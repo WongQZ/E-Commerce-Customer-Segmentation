@@ -67,17 +67,40 @@ if uploaded_file:
 
 if choice == "Data Overview":
     st.title("📊 Data Overview & Preprocessing")
+    
     if df is not None:
-        st.write("### Raw Data Preview")
-        st.dataframe(df.head(10), use_container_width=True)
+        raw_df = df
+        rfm_df = st.session_state.rfm_df
         
-        col1, col2 = st.columns(2)
+        st.markdown("### 💡 Key Performance Indicators")
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.write("### 🔢 Calculated RFM")
-            st.dataframe(st.session_state.rfm_df.head(), use_container_width=True)
+            st.metric(label="👥 Total Customers", value=f"{len(rfm_df):,}")
         with col2:
-            st.write("### 📏 Scaled Features")
-            st.dataframe(st.session_state.rfm_scaled_df.head(), use_container_width=True)
+            st.metric(label="🛒 Total Transactions", value=f"{len(raw_df):,}")
+        with col3:
+            avg_spend = rfm_df['Monetary'].mean()
+            st.metric(label="💰 Avg Spend/Customer", value=f"${avg_spend:.2f}")
+        with col4:
+            st.metric(label="📅 Data Rows", value=f"{len(raw_df):,}")
+            
+        st.divider() 
+        
+        with st.expander("📂 View Raw Data Preview (Click to expand)", expanded=False):
+            st.info("This is the original transactional data uploaded to the system. Displaying top 100 rows.")
+            st.dataframe(raw_df.head(100), use_container_width=True) 
+            
+        st.markdown("### ⚙️ Feature Engineering Results")
+        tab1, tab2 = st.tabs(["🔢 Calculated RFM Variables", "📏 Scaled Features (For AI)"])
+        
+        with tab1:
+            st.caption("Recency, Frequency, and Monetary values calculated per customer.")
+            st.dataframe(rfm_df, use_container_width=True)
+            
+        with tab2:
+            st.caption("Data normalized for distance-based clustering algorithms.")
+            st.dataframe(st.session_state.rfm_scaled_df, use_container_width=True) 
+
     else:
         st.info("👋 Welcome! Please upload your e-commerce CSV file from the sidebar to begin.")
 
