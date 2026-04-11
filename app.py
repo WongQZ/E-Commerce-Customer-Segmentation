@@ -11,9 +11,7 @@ st.set_page_config(page_title="AI Customer Insight", page_icon="🛒", layout="w
 
 st.markdown("""
     <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
+        
         
         [data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
             background-color: #1E1E1E;
