@@ -9,14 +9,32 @@ import meanshift_clustering as ms
 
 st.set_page_config(page_title="AI Customer Insight", page_icon="🛒", layout="wide")
 
-
-with st.sidebar:
     st.markdown("""
-        <div style='text-align: center;'>
-            <h2 style='color: #FF4B4B;'>🛍️ AI Segmenter</h2>
-            <p style='color: #888;'>E-commerce Analytics Pro</p>
+        <div style='text-align: center; 
+                    padding: 20px 10px; 
+                    background-color: #1A1C24; 
+                    border-radius: 12px; 
+                    border: 1px solid rgba(255, 75, 75, 0.2); 
+                    box-shadow: 0 4px 20px rgba(255, 75, 75, 0.15); 
+                    margin-bottom: 20px;'>
+            <h2 style='margin: 0; 
+                       font-family: "Arial Black", sans-serif; 
+                       background: linear-gradient(45deg, #FF4B4B, #FFA0A0); 
+                       -webkit-background-clip: text; 
+                       -webkit-text-fill-color: transparent; 
+                       font-size: 26px; 
+                       letter-spacing: -0.5px;'>
+                🛍️ Customers Segmenter
+            </h2>
+            <p style='margin: 8px 0 0 0; 
+                      color: #8892B0; 
+                      font-size: 11px; 
+                      font-weight: 700; 
+                      letter-spacing: 1.5px; 
+                      text-transform: uppercase;'>
+                E-commerce Analytics Pro
+            </p>
         </div>
-        <hr>
     """, unsafe_allow_html=True)
     
     choice = option_menu(
