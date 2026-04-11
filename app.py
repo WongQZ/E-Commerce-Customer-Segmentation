@@ -10,9 +10,7 @@ import meanshift_clustering as ms
 st.set_page_config(page_title="AI Customer Insight", page_icon="🛒", layout="wide")
 
 st.markdown("""
-    <style>
-        
-        
+    <style>   
         [data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
             background-color: #1E1E1E;
             border: 1px dashed #FF4B4B;
@@ -42,7 +40,7 @@ with st.sidebar:
                        -webkit-text-fill-color: transparent; 
                        font-size: 26px; 
                        letter-spacing: -0.5px;'>
-                🛍️ Customers Segmenter
+                🛍️ Customer Segmenter
             </h2>
             <p style='margin: 8px 0 0 0; 
                       color: #8892B0; 
