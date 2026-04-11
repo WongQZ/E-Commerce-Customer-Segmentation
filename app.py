@@ -51,15 +51,15 @@ if 'rfm_df' not in st.session_state:
 if 'rfm_scaled_df' not in st.session_state:
     st.session_state.rfm_scaled_df = None
 
+
 df = None
-if uploaded_file:
- 
+if uploaded_file is not None:
+
     if uploaded_file.name.endswith('.csv'):
         df = pd.read_csv(uploaded_file, encoding='unicode_escape')
     else:
         df = pd.read_excel(uploaded_file)
-    
-
+        
     cleaned_df = dp.clean_data(df)
     st.session_state.rfm_df = dp.calculate_rfm(cleaned_df)
     st.session_state.rfm_scaled_df, _ = dp.scale_rfm_data(st.session_state.rfm_df)
